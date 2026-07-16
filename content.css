@@ -1,0 +1,439 @@
+/* J-PlatPat 2列表示 スタイル */
+
+/* 調整用の変数 */
+:root {
+  --jpp2-offset: 130px;     /* 列の高さ(画面の高さから引く量) */
+  --jpp2-left-width: 1fr;   /* 請求の範囲の列幅(比率) */
+  --jpp2-right-width: 1fr;  /* 詳細な説明の列幅(比率) */
+  --jpp2-draw-w: 600px;     /* 図面ペインの幅(px固定・ボタンからも変更可) */
+}
+
+/* ===== ページ中央寄せの左右余白を潰して全幅表示 ===== */
+
+html.jpp2-enabled .jpp2-wide {
+  width: auto !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+/* ===== テキスト領域と図面ペインの幅 ===== */
+
+/* テキスト領域と図面ペインの共通の親を flex 化 */
+html.jpp2-enabled .jpp2-split {
+  display: flex !important;
+  align-items: flex-start;
+}
+
+/* テキスト領域:残り幅いっぱいに広げる */
+html.jpp2-enabled .jpp2-text-area {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+/* 図面ペイン:指定幅に固定(右下の「図面 −/+」ボタンで調整)
+   position: sticky で画面に追従し、下までスクロールしても消えない */
+html.jpp2-enabled .jpp2-draw-area {
+  flex: 0 0 var(--jpp2-draw-w) !important;
+  width: var(--jpp2-draw-w) !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  position: sticky !important;
+  top: 8px;
+  align-self: flex-start !important;
+}
+
+/* ===== 請求の範囲/詳細な説明の2列化 ===== */
+
+/* 「請求の範囲」「詳細な説明」の共通の親をグリッド化 */
+html.jpp2-enabled .jpp2-grid {
+  display: grid !important;
+  grid-template-columns: var(--jpp2-left-width) var(--jpp2-right-width);
+  gap: 8px;
+  align-items: start;
+  width: auto !important;
+  max-width: none !important;
+}
+
+/* 書誌・要約などその他のパネルは横幅いっぱい(従来どおり) */
+html.jpp2-enabled .jpp2-full {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+/* 2列にする各パネル:高さを画面内に収め、個別スクロールに */
+html.jpp2-enabled .jpp2-col {
+  max-height: calc(100vh - var(--jpp2-offset)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  min-width: 0;
+  width: auto !important;
+  max-width: none !important;
+  overscroll-behavior: contain; /* 端までスクロールしてもページ全体が動かないように */
+}
+
+html.jpp2-enabled .jpp2-left  { grid-column: 1; }
+html.jpp2-enabled .jpp2-right { grid-column: 2; }
+
+/* 書誌・要約が両方あるときは同じ行に横並び */
+html.jpp2-enabled .jpp2-bib { grid-column: 1; }
+html.jpp2-enabled .jpp2-abs { grid-column: 2; }
+
+/* パネル見出し(タイトル+閉じるボタンの帯)をスクロール中も上部に固定 */
+html.jpp2-enabled .jpp2-col .jpp2-sticky-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 20;
+  background: #f2f2f2;
+}
+
+/* ===== 文献ヘッダー領域のコンパクト化 ===== */
+
+/* header.headerDetail を1行の帯にする:
+   [番号・ステータス][表示形式・一次文献] ...........[ボタン列] */
+html.jpp2-enabled .jpp2-head-zone {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 20px;
+  margin: 0 !important;
+  padding: 4px 0 !important;
+}
+
+/* 番号・ステータス(改行はJS側で1行化) */
+html.jpp2-enabled .jpp2-head-zone .headerDetail__title {
+  font-size: 16px !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ボタン列は右端へ */
+html.jpp2-enabled .jpp2-head-zone .headerDetail__buttons {
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+}
+
+/* 表示形式・一次文献ブロック(#result_selector を移設したもの) */
+html.jpp2-enabled .jpp2-h-selector {
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+  flex: 0 0 auto;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html.jpp2-enabled .jpp2-h-selector hr {
+  display: none !important;
+}
+
+/* ヘッダー領域内の縦余白を除去し、幅制限(narrow)を解除 */
+html.jpp2-enabled .jpp2-h-main {
+  margin: 0 !important;
+  padding: 4px 12px !important;
+  max-width: none !important;
+  width: auto !important;
+}
+
+html.jpp2-enabled .jpp2-h-main *,
+html.jpp2-enabled .jpp2-h-selector * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* グレー帯全体の上下余白も圧縮 */
+html.jpp2-enabled .bg--gray > .l-content {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+/* ページャ行(前の文献/次の文献)の余白圧縮 */
+html.jpp2-enabled .jpp2-pager {
+  margin: 0 !important;
+  padding: 2px 12px !important;
+  max-width: none !important;
+}
+
+html.jpp2-enabled .jpp2-pager * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+html.jpp2-enabled .jpp2-pager .pager {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ===== ハイライトのスクロールバーマーカー ===== */
+
+.jpp2-markers {
+  position: fixed;
+  width: 10px;
+  z-index: 2147483000;
+  pointer-events: none;
+  display: none;
+}
+
+.jpp2-markers .jpp2-marker {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.jpp2-markers .jpp2-marker:hover {
+  transform: scaleY(1.6);
+}
+
+/* ===== 図面のその場拡大・縮小・回転 ===== */
+
+#jpp2-imgctl {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* 「拡大および回転」ボタンと高さ・ベースラインを揃える */
+html.jpp2-enabled #lnkEnlargeAndSpin {
+  vertical-align: middle !important;
+}
+
+/* サイト側のbutton共通スタイルに勝つため強制指定 */
+#jpp2-imgctl button {
+  box-sizing: border-box !important;
+  border: 1px solid #888 !important;
+  background: #fff !important;
+  border-radius: 4px !important;
+  width: 24px !important;
+  min-width: 24px !important;
+  max-width: 24px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  max-height: 20px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+  cursor: pointer;
+  vertical-align: middle !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#jpp2-imgctl button svg {
+  width: 13px;
+  height: 13px;
+  fill: #444;
+  display: block;
+}
+
+#jpp2-imgctl button:hover {
+  background: #eee;
+}
+
+/* 変形中の画像:はみ出しはコンテナ内に収め、ドラッグで移動可能に */
+html.jpp2-enabled .jpp2-img-clip {
+  overflow: hidden !important;
+}
+
+img.jpp2-img-transformed {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+img.jpp2-img-transformed:active {
+  cursor: grabbing;
+}
+
+/* ===== 操作ボタン ===== */
+
+#jpp2-controls {
+  position: fixed;
+  right: 16px;
+  bottom: 84px; /* J-PlatPat標準の「TOP」ボタンと重ならない位置 */
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font-family: "Meiryo", "Hiragino Sans", sans-serif;
+}
+
+/* 開閉ボタン(常時表示は基本これだけ) */
+#jpp2-fab {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #1a4f9c;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  opacity: 0.85;
+}
+
+#jpp2-fab:hover {
+  opacity: 1;
+}
+
+#jpp2-controls.jpp2-disabled #jpp2-fab {
+  background: #888;
+}
+
+/* 常時表示の横一列: [つまみ][ハイライト入力][≡] */
+#jpp2-mainrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#jpp2-drag {
+  cursor: move;
+  user-select: none;
+  color: #777;
+  font-size: 14px;
+  line-height: 1;
+  padding: 8px 6px;
+  background: #ffffff;
+  border: 1px solid #aaa;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  touch-action: none;
+}
+
+/* 畳んでいる間は横一列(入力欄・≡)以外を隠す */
+#jpp2-controls.jpp2-collapsed > :not(#jpp2-mainrow) {
+  display: none !important;
+}
+
+#jpp2-controls .jpp2-width-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #aaa;
+  border-radius: 16px;
+  padding: 3px 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#jpp2-controls.jpp2-disabled .jpp2-width-group,
+#jpp2-controls.jpp2-disabled .jpp2-pos-btn,
+#jpp2-controls.jpp2-disabled .jpp2-hl-group {
+  display: none; /* OFF時は幅調整・位置記憶・ハイライトを隠す */
+}
+
+#jpp2-controls .jpp2-hl-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #aaa;
+  border-radius: 16px;
+  padding: 3px 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#jpp2-controls .jpp2-hl-input {
+  border: none;
+  outline: none;
+  font-size: 12px;
+  width: 180px;
+  padding: 3px 6px;
+  background: transparent;
+  color: #333;
+}
+
+#jpp2-controls .jpp2-hl-clear {
+  border: none;
+  background: #eee;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+}
+
+#jpp2-controls .jpp2-hl-clear:hover {
+  background: #ddd;
+}
+
+/* 拡張自身のハイライト */
+span.jpp2-hl {
+  border-radius: 2px;
+  color: inherit;
+}
+
+#jpp2-controls .jpp2-pos-btn {
+  padding: 5px 10px;
+  border: 1px solid #aaa;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#jpp2-controls .jpp2-pos-btn.jpp2-on {
+  background: #3a7bd5;
+  border-color: #3a7bd5;
+  color: #fff;
+}
+
+#jpp2-controls .jpp2-width-group button {
+  border: none;
+  background: #eee;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #333;
+  cursor: pointer;
+}
+
+#jpp2-controls .jpp2-width-group button:hover {
+  background: #ddd;
+}
+
+#jpp2-controls .jpp2-width-label {
+  font-size: 11px;
+  color: #555;
+  min-width: 32px;
+  text-align: center;
+}
+
+#jpp2-toggle {
+  padding: 8px 14px;
+  border: 1px solid #888;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #333;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+#jpp2-toggle.jpp2-on {
+  background: #1a4f9c;
+  border-color: #1a4f9c;
+  color: #fff;
+}
+
+#jpp2-toggle:hover {
+  opacity: 0.85;
+}
