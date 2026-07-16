@@ -29,7 +29,7 @@
 ### 連絡先
 
 佐藤 寿
-satoh@sato-sogoip.com
+gsato@sato-sogoip.com
 
 ---
 
