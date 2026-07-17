@@ -474,6 +474,20 @@
     return !buttons.querySelector('#jpp2-nav');
   }
 
+  /* 図面パネルが本文より遅れて描画された場合(国際公開等)の検出。
+   * グリッド適用済みでも、グリッド外に図面パネルが見えているのに
+   * 分割(split)・余白除去(wide)が未適用なら、レイアウトの再適用が必要。 */
+  function splitNeedsWork() {
+    if (document.querySelector('.' + CLS.split)) return false;
+    const grid = document.querySelector('.' + CLS.grid);
+    for (const cand of findTitleEls(DRAWING_TITLE)) {
+      if (cand.offsetParent === null && cand.getClientRects().length === 0) continue;
+      if (grid && grid.contains(cand)) continue;
+      return true; // 見えている図面パネルがグリッド外にあるのに未分割
+    }
+    return false;
+  }
+
   function clickNativePager(which) {
     const scope = document.getElementById('upPagerArea') || document;
     const el = scope.querySelector(which === 'prev' ? '[id$="lblPrev"]' : '[id$="lblNext"]');
@@ -1064,6 +1078,10 @@
             !document.querySelector('.' + CLS.right)) {
           scheduleApply();
         } else {
+          // 図面パネルが後から描画された場合(国際公開等)は全体を再適用
+          if (splitNeedsWork()) {
+            scheduleApply();
+          }
           // ヘッダー・図面操作ボタンが後から描画・再描画された場合の再試行
           if (headerNeedsWork()) {
             compactHeader();
