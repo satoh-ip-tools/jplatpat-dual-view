@@ -437,3 +437,42 @@ span.jpp2-hl {
 #jpp2-toggle:hover {
   opacity: 0.85;
 }
+
+/* ===== 前の文献/次の文献ボタン ===== */
+
+#jpp2-nav {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px;
+  margin: 0 0 0 8px !important;
+  vertical-align: middle;
+}
+
+.jpp2-nav-btn {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  height: 30px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 1px solid #b9c7dd !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+.jpp2-nav-btn:hover {
+  background: #eef3fa !important;
+}
+
+.jpp2-nav-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: #1a4f9c;
+  display: block;
+}

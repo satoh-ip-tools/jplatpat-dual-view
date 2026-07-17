@@ -261,6 +261,7 @@
     }
 
     compactHeader();
+    ensureNavButtons();
     ensureImgControls();
     applyDrawWidth();
     document.documentElement.classList.add(CLS.enabledRoot);
@@ -460,6 +461,61 @@
     });
   }
 
+  /* ---------- 前の文献/次の文献ボタン ----------
+   * ヘッダーのボタン群の左に←/→を追加。クリックはページ内の
+   * 既存の「前の文献/次の文献」への転送のみで、通信は利用者が
+   * 元のページャを操作した場合と完全に同一。 */
+
+  function navNeedsWork() {
+    const rh = document.getElementById('result_header');
+    if (!rh) return false;
+    const buttons = rh.querySelector('.headerDetail__buttons');
+    if (!buttons) return false;
+    return !buttons.querySelector('#jpp2-nav');
+  }
+
+  function clickNativePager(which) {
+    const scope = document.getElementById('upPagerArea') || document;
+    const el = scope.querySelector(which === 'prev' ? '[id$="lblPrev"]' : '[id$="lblNext"]');
+    if (el) el.click();
+  }
+
+  function ensureNavButtons() {
+    if (!navNeedsWork()) return;
+    const buttons = document.querySelector('#result_header .headerDetail__buttons');
+    const wrap = document.createElement('span');
+    wrap.id = 'jpp2-nav';
+    const mk = (dir, title, path) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'jpp2-nav-btn';
+      b.title = title;
+      b.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + path + '"/></svg>';
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        clickNativePager(dir);
+      });
+      wrap.appendChild(b);
+    };
+    mk('prev', '前の文献', 'M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z');
+    mk('next', '次の文献', 'M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z');
+    buttons.appendChild(wrap); // ボタン群の右端(URLの右)に配置
+    // 高さは隣の既存ボタンの実測に合わせる
+    const ref = buttons.querySelector('a.mdc-button, a[id^="docuTitleArea_btn"]');
+    if (ref) {
+      const h = Math.round(ref.getBoundingClientRect().height);
+      if (h > 16) wrap.querySelectorAll('button').forEach(b => { b.style.setProperty('height', h + 'px', 'important'); });
+    }
+    flushObserver();
+    log('前後移動ボタンを追加しました');
+  }
+
+  function removeNavButtons() {
+    const el = document.getElementById('jpp2-nav');
+    if (el) el.remove();
+  }
+
   function restoreHeader() {
     const rs = document.getElementById('result_selector');
     if (rs && rsHome && rsHome.parent && rsHome.parent.isConnected) {
@@ -471,6 +527,7 @@
   function removeLayout() {
     document.documentElement.classList.remove(CLS.enabledRoot);
     restoreHeader();
+    removeNavButtons();
     removeImgControls();
     for (const cls of [CLS.grid, CLS.col, CLS.left, CLS.right, CLS.full,
                        CLS.bib, CLS.abs,
@@ -1010,6 +1067,9 @@
           // ヘッダー・図面操作ボタンが後から描画・再描画された場合の再試行
           if (headerNeedsWork()) {
             compactHeader();
+          }
+          if (navNeedsWork()) {
+            ensureNavButtons();
           }
           if (imgCtlNeedsWork()) {
             ensureImgControls();
