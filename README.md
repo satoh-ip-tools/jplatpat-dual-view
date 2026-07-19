@@ -6,7 +6,7 @@ J-PlatPat(特許情報プラットフォーム)の文献表示画面を、「請
 
 ![スクリーンショット](docs/images/screenshot.png)
 
-> スクリーンショットの例示には、QRコードの基本特許である特許第2938338号(権利満了済み)の公報を使用しています。[特許庁のウェブサイト](https://www.jpo.go.jp/news/koho/innovation/01_qrcode.html)や開発元である[株式会社デンソーウェーブのウェブサイト](https://www.denso-wave.com/ja/adcd/info/2403130.html)で広く紹介されている公開済みの公報であることから選定したものです。
+> スクリーンショットの例示には、QRコードの基本特許である特許第2938338号(権利満了済み)の公報を使用しています。このQRコードの基本特許については、開発元である[株式会社デンソーウェーブのウェブサイト](https://www.denso-wave.com/ja/adcd/info/2403130.html)で紹介されており、広く知られている公開済みの公報であることから選定したものです。QRコードの特許については、[特許庁のウェブサイト](https://www.jpo.go.jp/news/koho/innovation/01_qrcode.html)でも詳しく紹介されています。
 
 ## 機能
 
