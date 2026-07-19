@@ -21,10 +21,10 @@ J-PlatPat(特許情報プラットフォーム)の文献表示画面を、「請
 
 ## インストール
 
-### ストアから(公開後)
+### ストアから
 
-- Chromeウェブストア:現在審査中です。公開後にリンクを追記します。
-- Microsoft Edgeをお使いの方も、公開後はChromeウェブストアからインストールできます(初回に「他のストアからの拡張機能を許可する」の確認が表示されます)。
+- [Chromeウェブストア](https://chromewebstore.google.com/detail/mnenoildfpopliodhgklelngjiglhmlf)からインストールできます。
+- Microsoft Edgeをお使いの方も、上記Chromeウェブストアからインストールできます(初回に「他のストアからの拡張機能を許可する」の確認が表示されます)。
 
 ### 手動インストール
 
