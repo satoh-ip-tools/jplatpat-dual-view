@@ -258,6 +258,11 @@
           n.classList.add(CLS.wide);
         }
       }
+    } else {
+      // 図面パネルがない文献(化学系等)でも、テキスト領域から上をたどって余白を除去する
+      for (let n = container.parentElement; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+        n.classList.add(CLS.wide);
+      }
     }
 
     compactHeader();
