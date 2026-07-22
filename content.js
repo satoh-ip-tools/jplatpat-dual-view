@@ -281,6 +281,7 @@
       restoreScroll();     // 位置記憶の復元(文献移動後の再適用時)
       scheduleRefresh();   // ハイライトとマーカーの再計算
     }
+    updatePaneOffset();
     positionOverlays();
     updateButtons();
   }
@@ -545,6 +546,7 @@
 
   function removeLayout() {
     document.documentElement.classList.remove(CLS.enabledRoot);
+    document.documentElement.style.removeProperty('--jpp2-offset');
     restoreHeader();
     removeNavButtons();
     removeImgControls();
@@ -559,6 +561,28 @@
     hideOverlays();
     log('2列表示を解除しました');
     updateButtons();
+  }
+
+
+  /* ペイン高さの控除分(--jpp2-offset)を実測で更新する。
+   * 検索キーワードの凡例が複数行に折り返される等でヘッダーが高くなると、
+   * 固定値(130px)ではペイン下端が画面外にはみ出すため、
+   * ヘッダー(#result_header)の実高さ+書誌・要約行(畳み時)+余白ぶんを都度計算する。 */
+  function updatePaneOffset() {
+    if (!enabled) return;
+    const rh = document.getElementById('result_header');
+    const grid = document.querySelector('.' + CLS.grid);
+    if (!rh || !grid) return;
+    let off = rh.offsetHeight; // 凡例の折り返しを含む実測値
+    let bibRow = 0;
+    const bib = grid.querySelector('.' + CLS.bib);
+    const abs = grid.querySelector('.' + CLS.abs);
+    if (bib) bibRow = Math.max(bibRow, bib.offsetHeight);
+    if (abs) bibRow = Math.max(bibRow, abs.offsetHeight);
+    off += Math.min(bibRow, 60); // 書誌・要約が開いている場合は従来どおり(過大に差し引かない)
+    off += 40; // パネル見出し・余白ぶん
+    off = Math.max(110, Math.min(off, 400));
+    document.documentElement.style.setProperty('--jpp2-offset', off + 'px');
   }
 
   function applyDrawWidth() {
@@ -1097,6 +1121,7 @@
           if (imgCtlNeedsWork()) {
             ensureImgControls();
           }
+          updatePaneOffset(); // 凡例の行数変化・パネル開閉に高さを追従
           // ハイライトが後から描画される場合に備えてマーカーを更新
           if (markerDirtyTimer) clearTimeout(markerDirtyTimer);
           markerDirtyTimer = setTimeout(recomputeMarkers, 2000);
@@ -1105,6 +1130,7 @@
       initImagePan();
       observerRef = observer;
       observer.observe(document.body, { childList: true, subtree: true });
+      window.addEventListener('resize', () => { if (enabled) updatePaneOffset(); });
       log('初期化しました (enabled=' + enabled + ', drawWidth=' + drawWidth + 'px, posMemory=' + posMemory + ')');
     });
   }
