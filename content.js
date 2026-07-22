@@ -574,12 +574,13 @@
     const grid = document.querySelector('.' + CLS.grid);
     if (!rh || !grid) return;
     let off = rh.offsetHeight; // 凡例の折り返しを含む実測値
-    let bibRow = 0;
-    const bib = grid.querySelector('.' + CLS.bib);
-    const abs = grid.querySelector('.' + CLS.abs);
-    if (bib) bibRow = Math.max(bibRow, bib.offsetHeight);
-    if (abs) bibRow = Math.max(bibRow, abs.offsetHeight);
-    off += Math.min(bibRow, 60); // 書誌・要約が開いている場合は従来どおり(過大に差し引かない)
+    // テキスト列より上に載っている行(書誌+要約、または書誌のみ等)の高さは、
+    // 構成に依存しないよう「グリッド上端からテキスト列上端までの実距離」で測る
+    const left = grid.querySelector('.' + CLS.left);
+    if (left) {
+      const above = Math.round(left.getBoundingClientRect().top - grid.getBoundingClientRect().top);
+      off += Math.min(Math.max(above, 0), 60); // 書誌等が開いている場合は過大に差し引かない
+    }
     off += 40; // パネル見出し・余白ぶん
     off = Math.max(110, Math.min(off, 400));
     document.documentElement.style.setProperty('--jpp2-offset', off + 'px');
